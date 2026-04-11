@@ -9,9 +9,16 @@ spec:
     - chart: community-operator
       repoURL: https://mongodb.github.io/helm-charts
       targetRevision: "*"
+    - repoURL: 'https://github.com/Carlos-ZRM/rag-agent-med-hoot.git'
+      path: k8s/infra/mongodb
+      targetRevision: main
   destination:
     server: "https://kubernetes.default.svc"
     namespace: mongodb
   syncPolicy:
+    automated:
+      prune: true        # elimina recursos que ya no están en Git
+      selfHeal: true     # corrige cambios manuales fuera de Git
     syncOptions:
-    - CreateNamespace=true
+      - CreateNamespace=true
+      - ServerSideApply=true
