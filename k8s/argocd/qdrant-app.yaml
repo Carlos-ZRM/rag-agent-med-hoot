@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: qdrant
+  namespace: openshift-gitops
+spec:
+  project: default
+  sources:
+    - chart: qdrant
+      repoURL: https://qdrant.to/helm
+      targetRevision: 1.17.1
+    - repoURL: 'https://github.com/Carlos-ZRM/openshift-app.git'
+      path: argocd-helm/openshift
+      targetRevision: main
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: qdrant
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
