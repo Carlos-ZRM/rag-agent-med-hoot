@@ -1,0 +1,128 @@
+apiVersion: operator.openshift.io/v1
+kind: IngressController
+metadata:
+  creationTimestamp: "2024-04-12T17:41:05Z"
+  finalizers:
+  - ingresscontroller.operator.openshift.io/finalizer-ingresscontroller
+  generation: 5
+  name: default
+  namespace: openshift-ingress-operator
+  resourceVersion: "687088297"
+  uid: 87d7566c-54aa-435f-bb84-dd3d463431c4
+spec:
+  clientTLS:
+    clientCA:
+      name: ""
+    clientCertificatePolicy: ""
+  closedClientConnectionPolicy: Continue
+  httpCompression: {}
+  httpEmptyRequestsPolicy: Respond
+  httpErrorCodePages:
+    name: ""
+  idleConnectionTerminationPolicy: Deferred
+  nodePlacement:
+    nodeSelector:
+      matchLabels:
+        node-role.kubernetes.io/infra: ""
+    tolerations:
+    - effect: NoSchedule
+      key: node-role.kubernetes.io/infra
+      value: reserved
+    - effect: NoExecute
+      key: node-role.kubernetes.io/infra
+      value: reserved
+  replicas: 3
+  tuningOptions:
+    reloadInterval: 0s
+  unsupportedConfigOverrides: null
+status:
+  availableReplicas: 3
+  conditions:
+  - lastTransitionTime: "2024-04-12T17:41:06Z"
+    reason: Valid
+    status: "True"
+    type: Admitted
+  - lastTransitionTime: "2026-04-08T01:17:28Z"
+    message: The deployment has Available status condition set to True
+    reason: DeploymentAvailable
+    status: "True"
+    type: DeploymentAvailable
+  - lastTransitionTime: "2026-04-08T01:17:28Z"
+    message: Minimum replicas requirement is met
+    reason: DeploymentMinimumReplicasMet
+    status: "True"
+    type: DeploymentReplicasMinAvailable
+  - lastTransitionTime: "2026-04-08T01:17:58Z"
+    message: All replicas are available
+    reason: DeploymentReplicasAvailable
+    status: "True"
+    type: DeploymentReplicasAllAvailable
+  - lastTransitionTime: "2026-04-08T01:17:58Z"
+    message: Deployment is not actively rolling out
+    reason: DeploymentNotRollingOut
+    status: "False"
+    type: DeploymentRollingOut
+  - lastTransitionTime: "2024-04-12T17:41:06Z"
+    message: The configured endpoint publishing strategy does not include a managed
+      load balancer
+    reason: EndpointPublishingStrategyExcludesManagedLoadBalancer
+    status: "False"
+    type: LoadBalancerManaged
+  - lastTransitionTime: "2024-04-12T17:41:06Z"
+    message: LoadBalancer is not progressing
+    reason: LoadBalancerNotProgressing
+    status: "False"
+    type: LoadBalancerProgressing
+  - lastTransitionTime: "2024-04-12T17:41:06Z"
+    message: No DNS zones are defined in the cluster dns config.
+    reason: NoDNSZones
+    status: "False"
+    type: DNSManaged
+  - lastTransitionTime: "2026-04-08T01:17:28Z"
+    status: "True"
+    type: Available
+  - lastTransitionTime: "2026-04-08T01:17:58Z"
+    status: "False"
+    type: Progressing
+  - lastTransitionTime: "2026-02-28T08:09:06Z"
+    status: "False"
+    type: Degraded
+  - lastTransitionTime: "2024-04-12T17:41:06Z"
+    message: IngressController is upgradeable.
+    reason: Upgradeable
+    status: "True"
+    type: Upgradeable
+  - lastTransitionTime: "2024-04-12T17:41:06Z"
+    message: No evaluation condition is detected.
+    reason: NoEvaluationCondition
+    status: "False"
+    type: EvaluationConditionsDetected
+  - lastTransitionTime: "2025-09-05T23:39:42Z"
+    message: Canary route checks for the default ingress controller are successful
+    reason: CanaryChecksSucceeding
+    status: "True"
+    type: CanaryChecksSucceeding
+  domain: apps.opshft-devqa.banobras.gob.mx
+  endpointPublishingStrategy:
+    hostNetwork:
+      httpPort: 80
+      httpsPort: 443
+      protocol: TCP
+      statsPort: 1936
+    type: HostNetwork
+  observedGeneration: 5
+  selector: ingresscontroller.operator.openshift.io/deployment-ingresscontroller=default
+  tlsProfile:
+    ciphers:
+    - ECDHE-ECDSA-AES128-GCM-SHA256
+    - ECDHE-RSA-AES128-GCM-SHA256
+    - ECDHE-ECDSA-AES256-GCM-SHA384
+    - ECDHE-RSA-AES256-GCM-SHA384
+    - ECDHE-ECDSA-CHACHA20-POLY1305
+    - ECDHE-RSA-CHACHA20-POLY1305
+    - DHE-RSA-AES128-GCM-SHA256
+    - DHE-RSA-AES256-GCM-SHA384
+    - TLS_AES_128_GCM_SHA256
+    - TLS_AES_256_GCM_SHA384
+    - TLS_CHACHA20_POLY1305_SHA256
+    minTLSVersion: VersionTLS12
