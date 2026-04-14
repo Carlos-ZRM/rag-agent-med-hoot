@@ -52,7 +52,7 @@ spec:
             failureThreshold: 3
           env:
             - name: HUGGING_FACE_HUB_TOKEN
-              value: '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'
+              value: 'hf_XXXXXXXXXXXXXXXX'
           args: [
             "--model",
             "mistralai/Mistral-7B-Instruct-v0.2",

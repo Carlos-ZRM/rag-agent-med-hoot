@@ -113,3 +113,5 @@ dmypy.json
 *.bak
 *.swp
 *.swo
+
+k8s/infra/vllm/.deployment.yaml
