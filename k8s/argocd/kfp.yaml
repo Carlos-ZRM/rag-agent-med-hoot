@@ -1,13 +1,13 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: vllm-server
+  name: kfp-server
   namespace: openshift-gitops
 spec:
   project: default
   sources:
     - repoURL: 'https://github.com/Carlos-ZRM/rag-agent-med-hoot.git'
-      path: k8s/infra/vllm
+      path: k8s/infra/kfp
       targetRevision: main
   destination:
     server: "https://kubernetes.default.svc"

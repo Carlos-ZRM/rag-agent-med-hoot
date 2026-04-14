@@ -1,0 +1,38 @@
+apiVersion: datasciencepipelinesapplications.opendatahub.io/v1
+kind: DataSciencePipelinesApplication
+metadata:
+  name: kfp-server
+  namespace: rag-llm-demo
+spec:
+  apiServer:
+    deploy: true
+    enableSamplePipeline: false
+    enableOauth: true
+  database:
+    disableHealthCheck: false
+    mariaDB:
+      deploy: true
+      pipelineDBName: mlpipeline
+      pvcSize: 10Gi
+      username: mlpipeline
+  dspVersion: v2
+  objectStorage:
+    disableHealthCheck: false
+    enableExternalRoute: false
+    externalStorage:
+      basePath: ''
+      bucket: s3-pipes
+      host: 's3.us-east-2.amazonaws.com'
+      port: ''
+      region: us-east-2
+      s3CredentialsSecret:
+        accessKey: AWS_ACCESS_KEY_ID # Update with minio access key
+        secretKey: AWS_SECRET_ACCESS_KEY # Update with minio secret key
+        secretName: kfp-s3-credentials # Update with the secret name
+      scheme: http
+  persistenceAgent:
+    deploy: true
+    numWorkers: 2
+  scheduledWorkflow:
+    cronScheduleTimezone: UTC
+    deploy: true

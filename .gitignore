@@ -115,3 +115,4 @@ dmypy.json
 *.swo
 
 k8s/infra/vllm/.deployment.yaml
+.pass
