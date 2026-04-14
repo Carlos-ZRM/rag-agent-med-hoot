@@ -18,7 +18,7 @@ spec:
   dspVersion: v2
   objectStorage:
     disableHealthCheck: false
-    enableExternalRoute: false
+    enableExternalRoute: true
     externalStorage:
       basePath: ''
       bucket: s3-pipes
@@ -29,7 +29,7 @@ spec:
         accessKey: AWS_ACCESS_KEY_ID # Update with minio access key
         secretKey: AWS_SECRET_ACCESS_KEY # Update with minio secret key
         secretName: kfp-s3-credentials # Update with the secret name
-      scheme: http
+      scheme: https
   persistenceAgent:
     deploy: true
     numWorkers: 2
