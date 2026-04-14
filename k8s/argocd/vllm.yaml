@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: vllm-server
+  namespace: openshift-gitops
+spec:
+  project: default
+  sources:
+    - repoURL: 'https://github.com/Carlos-ZRM/rag-agent-med-hoot.git'
+      path: k8s/infra/vllm
+      targetRevision: main
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: rag-llm-demo
+  syncPolicy:
+    automated:
+      prune: true        # elimina recursos que ya no están en Git
+      selfHeal: true     # corrige cambios manuales fuera de Git
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true

@@ -5,7 +5,7 @@ metadata:
   namespace: rag-llm-demo
 spec:
   strategy:
-    type: Recreate          # ✅ solo esto es válido en apps/v1
+    type: Recreate
   replicas: 1
   selector:
     matchLabels:
