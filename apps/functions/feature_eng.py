@@ -61,13 +61,22 @@ def score_silueta(
 
     fig.show()
 
-
 def codo(X, min_compo, max_compo):
+    import matplotlib.pyplot as plt
+    from sklearn.cluster import KMeans
+
+    distortions = []
+    K = range(min_compo, max_compo)
+    for k in K:
+        km = KMeans(n_clusters=k, n_init=10, random_state=42)
+        km.fit(X)
+        distortions.append(km.inertia_)
+
     fig, ax = plt.subplots(figsize=(10, 6))
-    model = KMeans()
-    visualizer = KElbowVisualizer(model, k=(min_compo, max_compo), ax=ax)
-    visualizer.fit(X)
-    visualizer.finalize()
+    ax.plot(list(K), distortions, "bx-")
+    ax.set_xlabel("k")
+    ax.set_ylabel("Distortion (Inertia)")
+    ax.set_title("Elbow Method")
     return fig
 
 def score_calinski(X,min_compo,max_compo):
