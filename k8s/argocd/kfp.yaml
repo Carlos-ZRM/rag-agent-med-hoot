@@ -14,8 +14,8 @@ spec:
     namespace: rag-llm-demo
   syncPolicy:
     automated:
-      prune: true        # elimina recursos que ya no están en Git
-      selfHeal: true     # corrige cambios manuales fuera de Git
+      prune: false        # elimina recursos que ya no están en Git
+      selfHeal: false     # corrige cambios manuales fuera de Git
     syncOptions:
       - CreateNamespace=true
       - ServerSideApply=false

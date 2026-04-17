@@ -116,3 +116,4 @@ dmypy.json
 
 k8s/infra/vllm/.deployment.yaml
 .pass
+apps/pipeline/kubeflow-pipelines-examples/

@@ -1,0 +1,7 @@
+numpy>=1.23
+pandas>=2.0
+scikit-learn>=1.3
+joblib>=1.3
+
+# Optional: required only by ds_framework.utils.izquierda (notebook styling).
+# jinja2>=3.0
