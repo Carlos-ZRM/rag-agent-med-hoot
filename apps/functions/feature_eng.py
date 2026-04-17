@@ -20,45 +20,35 @@ def score_silueta(
     X,
     min_compo,
     max_compo,
-    model_type="kmeans",   # "kmeans" o "gmm"
-    random_state=42
+    model_type="kmeans",
+    random_state=42,
 ):
     silueta = []
 
     for k in range(min_compo, max_compo):
-
         if model_type == "kmeans":
             model = KMeans(n_clusters=k, random_state=random_state)
-            labels = model.fit_predict(X)
-
         elif model_type == "gmm":
             model = GaussianMixture(
-                n_components=k,
-                covariance_type="full",
-                random_state=random_state
+                n_components=k, covariance_type="full", random_state=random_state
             )
-            labels = model.fit_predict(X)
-
         else:
             raise ValueError("model_type debe ser 'kmeans' o 'gmm'")
 
+        labels = model.fit_predict(X)
         score = silhouette_score(X, labels, metric="euclidean")
         silueta.append(score)
 
     df_silueta = pd.DataFrame({
         "N_Clusters": range(min_compo, max_compo),
-        "score": silueta
+        "score": silueta,
     })
 
     fig = px.line(
-        df_silueta,
-        x="N_Clusters",
-        y="score",
-        markers=True,
-        title=f"Número óptimo de clusters - Silueta ({model_type.upper()})"
+        df_silueta, x="N_Clusters", y="score", markers=True,
+        title=f"Número óptimo de clusters - Silueta ({model_type.upper()})",
     )
-
-    fig.show()
+    return fig
 
 def codo(X, min_compo, max_compo):
     import matplotlib.pyplot as plt
