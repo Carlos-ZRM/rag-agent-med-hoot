@@ -63,7 +63,9 @@ def score_silueta(
 def codo(X,min_compo,max_compo):
     model = KMeans()
     visualizer = KElbowVisualizer(model, k=(min_compo,max_compo)).fit(X)
-    return visualizer.show()
+    visualizer.fit(X)
+    visualizer.finalize()
+    return visualizer
 
 
 def score_calinski(X,min_compo,max_compo):
