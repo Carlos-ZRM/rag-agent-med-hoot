@@ -14,6 +14,8 @@ from sklearn.mixture import GaussianMixture
 from sklearn.metrics import silhouette_score
 import pandas as pd
 import plotly.express as px
+import matplotlib.pyplot as plt
+
 
 def score_silueta(
     X,
@@ -60,13 +62,13 @@ def score_silueta(
     fig.show()
 
 
-def codo(X,min_compo,max_compo):
+def codo(X, min_compo, max_compo):
+    fig, ax = plt.subplots(figsize=(10, 6))
     model = KMeans()
-    visualizer = KElbowVisualizer(model, k=(min_compo,max_compo)).fit(X)
+    visualizer = KElbowVisualizer(model, k=(min_compo, max_compo), ax=ax)
     visualizer.fit(X)
     visualizer.finalize()
-    return visualizer
-
+    return fig
 
 def score_calinski(X,min_compo,max_compo):
     calinski = []
