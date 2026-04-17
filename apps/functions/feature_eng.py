@@ -1,6 +1,5 @@
 # Feature engineering functions for clustering analysis
 from sklearn.metrics import silhouette_samples, silhouette_score
-from yellowbrick.cluster import KElbowVisualizer
 from sklearn.metrics import calinski_harabasz_score
 import random
 import plotly.express as px
