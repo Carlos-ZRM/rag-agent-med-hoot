@@ -1,0 +1,31 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: default
+
+# Base configuration - includes all infrastructure components
+# Components organized by service
+resources:
+  # Infrastructure manifests
+  - db-secret.yaml
+  - mongodb.yaml
+  - scc.yaml
+
+# Namespace will be overridden in overlays if needed
+# namePrefix: ""
+# nameSuffix: ""
+
+# Labels applied to all resources
+commonLabels:
+  app: medi-hoot-db
+
+# Directory structure:
+# base/
+#   kustomization.yaml  (this file)
+#   Components reference existing manifests in infra/
+#
+# overlays/
+#   dev/
+#     kustomization.yaml  (dev-specific patches and resources)
+#   production/
+#     kustomization.yaml  (production-specific patches and resources)

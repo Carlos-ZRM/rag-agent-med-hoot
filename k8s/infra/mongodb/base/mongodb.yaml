@@ -2,8 +2,7 @@
 apiVersion: mongodbcommunity.mongodb.com/v1
 kind: MongoDBCommunity
 metadata:
-  name: mongodb
-  namespace: mongodb
+  name: mongodb-instance
 spec:
   members: 1                    # ReplicaSet con 3 nodos
   type: ReplicaSet
