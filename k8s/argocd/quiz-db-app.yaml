@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: quiz-app-from-argocd
+  namespace: openshift-gitops
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/Carlos-ZRM/rag-agent-med-hoot.git
+    targetRevision: HEAD
+    path: k8s/helm/quiz-db-app
+    helm:
+      valueFiles:
+        - dev-values.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: xpk
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
