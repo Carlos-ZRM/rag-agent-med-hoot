@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Kahoot – Question Manager</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<!-- ── Header ── -->
+<header class="header">
+    <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+        <rect width="40" height="40" rx="10" fill="rgba(255,255,255,.2)"/>
+        <path d="M20 8 L20 18 M20 24 L20 26" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+        <circle cx="20" cy="20" r="10" stroke="#fff" stroke-width="2" fill="none"/>
+        <path d="M14 20 h12" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+    <div>
+        <h1>Health Kahoot</h1>
+        <p>True / False Question Manager</p>
+    </div>
+</header>
+
+<!-- ── Toolbar ── -->
+<div class="toolbar">
+    <div class="search-box">
+        <span class="icon">&#128269;</span>
+        <input type="text" id="searchInput" placeholder="Search questions…" autocomplete="off">
+    </div>
+    <div class="filter-group">
+        <select id="filterCategory">
+            <option value="">All Categories</option>
+            {% for c in categories %}
+            <option value="{{ c }}">{{ c }}</option>
+            {% endfor %}
+        </select>
+        <select id="filterDifficulty">
+            <option value="">All Levels</option>
+            <option value="1">⬤ Easy</option>
+            <option value="2">⬤ Medium</option>
+            <option value="3">⬤ Hard</option>
+        </select>
+        <button class="btn-primary" onclick="openCreate()">+ New Question</button>
+    </div>
+</div>
+
+<!-- ── Stats ── -->
+<div class="stats">
+    <span>Showing</span>
+    <span class="badge" id="countBadge">0</span>
+    <span>questions</span>
+</div>
+
+<!-- ── Card grid ── -->
+<div class="grid" id="grid"></div>
+
+<!-- ── Modal ── -->
+<div class="overlay" id="overlay" onclick="if(event.target===this)closeModal()">
+    <div class="modal">
+        <div class="modal-head">
+            <h2 id="modalTitle">New Question</h2>
+            <button onclick="closeModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="editId">
+
+            <div class="field">
+                <label>Question</label>
+                <textarea id="fText" placeholder="e.g. The normal body temperature is 37 °C"></textarea>
+            </div>
+
+            <div class="field">
+                <label>Correct Answer</label>
+                <div class="tf-toggle">
+                    <label id="btnTrue" class="active-true" onclick="setAnswer(true)">✓ True</label>
+                    <label id="btnFalse" onclick="setAnswer(false)">✗ False</label>
+                </div>
+                <input type="hidden" id="fAnswer" value="true">
+            </div>
+
+            <div class="field">
+                <label>Category</label>
+                <select id="fCategory">
+                    {% for c in categories %}
+                    <option value="{{ c }}">{{ c }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="field">
+                <label>Difficulty</label>
+                <select id="fDifficulty">
+                    <option value="1">Easy</option>
+                    <option value="2">Medium</option>
+                    <option value="3">Hard</option>
+                </select>
+            </div>
+
+            <div class="field">
+                <label>Explanation (optional)</label>
+                <textarea id="fExplanation" placeholder="Why is this true or false?"></textarea>
+            </div>
+        </div>
+        <div class="modal-foot">
+            <button onclick="closeModal()">Cancel</button>
+            <button class="btn-primary" onclick="saveQuestion()">Save</button>
+        </div>
+    </div>
+</div>
+
+<!-- ── Toasts ── -->
+<div class="toast-container" id="toasts"></div>
+
+<script>
+/* ── state ── */
+const API = '/api/questions';
+let debounce = null;
+
+/* ── helpers ── */
+function toast(msg, error=false){
+    const d = document.createElement('div');
+    d.className = 'toast' + (error ? ' error' : '');
+    d.textContent = msg;
+    document.getElementById('toasts').appendChild(d);
+    setTimeout(() => d.remove(), 3000);
+}
+
+async function api(path, opts={}){
+    const r = await fetch(path, {
+        headers: {'Content-Type':'application/json'},
+        ...opts
+    });
+    if(!r.ok) throw new Error(`HTTP ${r.status}`);
+    return r.json();
+}
+
+/* ── load ── */
+async function load(){
+    const search   = document.getElementById('searchInput').value.trim();
+    const category = document.getElementById('filterCategory').value;
+    const diff     = document.getElementById('filterDifficulty').value;
+    const params   = new URLSearchParams();
+    if(search)   params.set('search', search);
+    if(category) params.set('category', category);
+    if(diff)     params.set('difficulty', diff);
+
+    try {
+        const data = await api(`${API}?${params}`);
+        render(data.items);
+        document.getElementById('countBadge').textContent = data.total;
+    } catch(e) {
+        toast('Failed to load questions', true);
+    }
+}
+
+function diffLabel(d){ return ['','Easy','Medium','Hard'][d] || ''; }
+
+function render(items){
+    const grid = document.getElementById('grid');
+    if(!items.length){
+        grid.innerHTML = `<div class="empty">
+            <h3>No questions yet</h3>
+            <p>Click "+ New Question" to get started</p></div>`;
+        return;
+    }
+    grid.innerHTML = items.map(q => `
+        <div class="card ${q.correct_answer}">
+            <div class="card-header">
+                <div class="tags">
+                    <span class="tag cat">${q.category}</span>
+                    <span class="tag diff-${q.difficulty}">${diffLabel(q.difficulty)}</span>
+                </div>
+            </div>
+            <div class="card-question">${esc(q.text)}</div>
+            <div class="card-answer">
+                <span class="answer-badge ${q.correct_answer}">
+                    ${q.correct_answer ? '✓ True' : '✗ False'}
+                </span>
+            </div>
+            ${q.explanation ? `<div class="card-explanation">${esc(q.explanation)}</div>` : ''}
+            <div class="card-actions">
+                <button onclick="openEdit('${q.id}')">Edit</button>
+                <button class="del" onclick="remove('${q.id}')">Delete</button>
+            </div>
+        </div>`).join('');
+}
+
+function esc(s){ const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
+
+/* ── modal ── */
+function openCreate(){
+    document.getElementById('editId').value = '';
+    document.getElementById('fText').value = '';
+    document.getElementById('fExplanation').value = '';
+    document.getElementById('fCategory').value = 'General';
+    document.getElementById('fDifficulty').value = '1';
+    setAnswer(true);
+    document.getElementById('modalTitle').textContent = 'New Question';
+    document.getElementById('overlay').classList.add('open');
+}
+
+async function openEdit(id){
+    try {
+        const q = await api(`${API}/${id}`);
+        document.getElementById('editId').value = q.id;
+        document.getElementById('fText').value = q.text;
+        document.getElementById('fExplanation').value = q.explanation;
+        document.getElementById('fCategory').value = q.category;
+        document.getElementById('fDifficulty').value = q.difficulty;
+        setAnswer(q.correct_answer);
+        document.getElementById('modalTitle').textContent = 'Edit Question';
+        document.getElementById('overlay').classList.add('open');
+    } catch(e) { toast('Could not load question', true); }
+}
+
+function closeModal(){
+    document.getElementById('overlay').classList.remove('open');
+}
+
+function setAnswer(val){
+    document.getElementById('fAnswer').value = val;
+    const t = document.getElementById('btnTrue');
+    const f = document.getElementById('btnFalse');
+    t.className = val ? 'active-true' : '';
+    f.className = val ? '' : 'active-false';
+}
+
+async function saveQuestion(){
+    const id   = document.getElementById('editId').value;
+    const body = {
+        text:           document.getElementById('fText').value.trim(),
+        correct_answer: document.getElementById('fAnswer').value === 'true',
+        category:       document.getElementById('fCategory').value,
+        difficulty:     parseInt(document.getElementById('fDifficulty').value),
+        explanation:    document.getElementById('fExplanation').value.trim(),
+    };
+    if(!body.text){ toast('Question text is required', true); return; }
+    try {
+        if(id){
+            await api(`${API}/${id}`, {method:'PUT', body: JSON.stringify(body)});
+            toast('Question updated');
+        } else {
+            await api(API, {method:'POST', body: JSON.stringify(body)});
+            toast('Question created');
+        }
+        closeModal();
+        load();
+    } catch(e) { toast('Save failed', true); }
+}
+
+async function remove(id){
+    if(!confirm('Delete this question?')) return;
+    try {
+        await api(`${API}/${id}`, {method:'DELETE'});
+        toast('Question deleted');
+        load();
+    } catch(e) { toast('Delete failed', true); }
+}
+
+/* ── events ── */
+document.getElementById('searchInput').addEventListener('input', () => {
+    clearTimeout(debounce);
+    debounce = setTimeout(load, 300);
+});
+document.getElementById('filterCategory').addEventListener('change', load);
+document.getElementById('filterDifficulty').addEventListener('change', load);
+
+/* ── init ── */
+load();
+</script>
+</body>
+</html>
