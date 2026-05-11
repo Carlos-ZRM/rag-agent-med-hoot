@@ -1,6 +1,6 @@
 
 bases:
-  - ../base
+  - ../../base
 
 patchesJson6902:
   - target:

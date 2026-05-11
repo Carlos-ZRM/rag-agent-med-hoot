@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: mongodb
+  namespace: openshift-gitops
+spec:
+  goTemplate: true
+  goTemplateOptions: ["missingkey=error"]
+  generators:
+  - list:
+      elements:
+      - env: dev
+        mgdb_targetRevision: 0.13.0
+        repo_path: k8s/infra/mongodb/overlays/dev
+      - env: prod
+        mgdb_targetRevision: 0.12.1
+        repo_path: k8s/infra/mongodb/overlays/production
+  template:
+    metadata:
+      name: mongodb-{{.env}}
+      namespace: openshift-gitops
+    spec:
+      project: default
+      sources:
+        - chart: community-operator
+          repoURL: https://mongodb.github.io/helm-charts
+          targetRevision: "{{.mgdb_targetRevision}}"
+        - repoURL: 'https://github.com/Carlos-ZRM/rag-agent-med-hoot.git'
+          path: "{{.repo_path}}"
+          targetRevision: main
+      destination:
+        server: "https://kubernetes.default.svc"
+        namespace: mongodb-{{.env}}
+      syncPolicy:
+        automated:
+          prune: true        # elimina recursos que ya no están en Git
+          selfHeal: true     # corrige cambios manuales fuera de Git
+        syncOptions:
+          - CreateNamespace=true
+          - ServerSideApply=true

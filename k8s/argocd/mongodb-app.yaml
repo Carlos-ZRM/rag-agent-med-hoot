@@ -10,11 +10,11 @@ spec:
       repoURL: https://mongodb.github.io/helm-charts
       targetRevision: "*"
     - repoURL: 'https://github.com/Carlos-ZRM/rag-agent-med-hoot.git'
-      path: k8s/infra/mongodb
+      path: k8s/infra/mongodb/overlays/dev
       targetRevision: main
   destination:
     server: "https://kubernetes.default.svc"
-    namespace: mongodb
+    namespace: mongodb-dev
   syncPolicy:
     automated:
       prune: true        # elimina recursos que ya no están en Git
