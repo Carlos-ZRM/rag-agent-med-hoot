@@ -3,6 +3,16 @@ bases:
   - ../../base
 
 
-commonLabels:
-  db-engine: mongodb
-  environment: development
+patchesJson6902:
+  - target:
+      group: rbac.authorization.k8s.io
+      version: v1
+      kind: RoleBinding
+      name: system:openshift:scc:anyuid
+    patch: |-
+      - op: replace
+        path: /subjects/0/namespace
+        value: mongodb-dev
+      - op: replace
+        path: /subjects/1/namespace
+        value: mongodb-dev
