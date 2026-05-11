@@ -10,7 +10,7 @@ patches:
       name: mongodb-instance
     patch: |-
       - op: replace
-        path: spec/statefulSet/spec/template/spec/containers/0/resources
+        path: /spec/statefulSet/spec/template/spec/containers/0/resources
         value:
           requests:
             cpu: "1"
@@ -26,7 +26,7 @@ patches:
     patch: |-
       - op: replace
         path: /subjects/0/namespace
-        value: mongodb-dev
+        value: mongodb-prod
       - op: replace
         path: /subjects/1/namespace
-        value: mongodb-dev
+        value: mongodb-prod
