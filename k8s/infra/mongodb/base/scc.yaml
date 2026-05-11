@@ -4,7 +4,6 @@ kind: RoleBinding
 metadata:
   creationTimestamp: null
   name: system:openshift:scc:anyuid
-  namespace: mongodb
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
