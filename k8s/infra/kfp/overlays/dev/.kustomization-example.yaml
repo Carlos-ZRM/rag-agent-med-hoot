@@ -1,0 +1,12 @@
+resources:
+  - ../../base
+
+patches:
+  - target:
+      kind: Secret
+      name: kfp-s3-credentials
+    patch: |-
+      stringData:
+        AWS_ACCESS_KEY_ID: xxxxxx
+        AWS_SECRET_ACCESS_KEY: xxxxxx
+
