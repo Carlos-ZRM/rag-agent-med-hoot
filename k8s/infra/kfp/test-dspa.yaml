@@ -1,0 +1,107 @@
+apiVersion: datasciencepipelinesapplications.opendatahub.io/v1
+kind: DataSciencePipelinesApplication
+metadata:
+  creationTimestamp: "2026-05-22T02:13:25Z"
+  finalizers:
+  - datasciencepipelinesapplications.opendatahub.io/finalizer
+  generation: 2
+  name: dspa
+  namespace: rag-llm-demo
+  resourceVersion: "5813378"
+  uid: 3e3ee0dd-cdfe-4795-bdef-5a2d2c794063
+spec:
+  apiServer:
+    artifactSignedURLExpirySeconds: 60
+    caBundleFileMountPath: ""
+    caBundleFileName: ""
+    cacheEnabled: true
+    deploy: true
+    enableOauth: true
+    enableSamplePipeline: false
+    managedPipelines:
+      instructLab:
+        state: Removed
+    pipelineStore: kubernetes
+  database:
+    disableHealthCheck: false
+    mariaDB:
+      deploy: true
+      pipelineDBName: mlpipeline
+      pvcSize: 10Gi
+      username: mlpipeline
+  dspVersion: v2
+  objectStorage:
+    disableHealthCheck: false
+    enableExternalRoute: false
+    externalStorage:
+      basePath: ""
+      bucket: s3-pipes
+      host: s3.us-east-2.amazonaws.com
+      port: ""
+      region: us-east-2
+      s3CredentialsSecret:
+        accessKey: AWS_ACCESS_KEY_ID
+        secretKey: AWS_SECRET_ACCESS_KEY
+        secretName: dashboard-dspa-secret
+      scheme: https
+  persistenceAgent:
+    deploy: true
+    numWorkers: 2
+  podToPodTLS: true
+  scheduledWorkflow:
+    cronScheduleTimezone: UTC
+    deploy: true
+status:
+  components:
+    apiServer:
+      externalUrl: https://ds-pipeline-dspa-rag-llm-demo.apps.cluster-45vh9.45vh9.sandbox2077.opentlc.com
+      url: https://ds-pipeline-dspa.rag-llm-demo.svc.cluster.local:8443
+    mlmdProxy:
+      externalUrl: https://ds-pipeline-md-dspa-rag-llm-demo.apps.cluster-45vh9.45vh9.sandbox2077.opentlc.com
+      url: https://ds-pipeline-md-dspa.rag-llm-demo.svc.cluster.local:8443
+  conditions:
+  - lastTransitionTime: "2026-05-22T02:13:47Z"
+    message: Database connectivity successfully verified
+    reason: DatabaseAvailable
+    status: "True"
+    type: DatabaseAvailable
+  - lastTransitionTime: "2026-05-22T02:13:25Z"
+    message: Object Store connectivity successfully verified
+    reason: ObjectStoreAvailable
+    status: "True"
+    type: ObjectStoreAvailable
+  - lastTransitionTime: "2026-05-22T02:14:27Z"
+    message: Component [ds-pipeline-dspa] is minimally available.
+    reason: MinimumReplicasAvailable
+    status: "True"
+    type: APIServerReady
+  - lastTransitionTime: "2026-05-22T02:14:12Z"
+    message: Component [ds-pipeline-persistenceagent-dspa] is minimally available.
+    reason: MinimumReplicasAvailable
+    status: "True"
+    type: PersistenceAgentReady
+  - lastTransitionTime: "2026-05-22T02:14:12Z"
+    message: Component [ds-pipeline-scheduledworkflow-dspa] is minimally available.
+    reason: MinimumReplicasAvailable
+    status: "True"
+    type: ScheduledWorkflowReady
+  - lastTransitionTime: "2026-05-22T02:14:21Z"
+    message: Component [ds-pipeline-workflow-controller-dspa] is minimally available.
+    reason: MinimumReplicasAvailable
+    status: "True"
+    type: WorkflowControllerReady
+  - lastTransitionTime: "2026-05-22T02:14:12Z"
+    message: Component [ds-pipeline-scheduledworkflow-dspa] is minimally available.
+    reason: MinimumReplicasAvailable
+    status: "True"
+    type: MLMDProxyReady
+  - lastTransitionTime: "2026-05-22T02:14:06Z"
+    message: Webhook deployment successfully verified
+    reason: WebhookReady
+    status: "True"
+    type: WebhookReady
+  - lastTransitionTime: "2026-05-22T02:14:27Z"
+    message: All components are ready.
+    reason: MinimumReplicasAvailable
+    status: "True"
+    type: Ready
