@@ -1,0 +1,32 @@
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  name: bc-netcat
+  namespace: xpk
+spec:
+  source:
+    type: Git
+    git:
+      uri: {{ .Values.app.git-uri }}
+      ref: {{ .Values.app.git-ref }}
+    contextDir: {{ .Values.app.git-context-dir }}
+  strategy:
+    type: Docker               # or Source
+    dockerStrategy:
+      dockerfilePath: {{ .Values.app.git-dockerfile }}
+      buildArgs:
+        - name: BASE_IMAGE
+          value: "registry.access.redhat.com/ubi9/python-312:9.6-1747333115"
+        - name: APP_VERSION
+          value: "3.1.4"
+  output:
+    to:
+      kind: ImageStreamTag
+      name: {{ include "pedi-hoot.fullname" . }}-{{ .Values.image.name }}:{{ .Values.image.tag | default .Chart.AppVersion }}
+  triggers:
+  - github:
+      secret: 6lKqfBsLMuSNVxZ48sEz
+    type: GitHub
+  - generic:
+      secret: IMBa22Yw8JK-s_nWE7Kr
+    type: Generic
